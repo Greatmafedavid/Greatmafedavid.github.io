@@ -3,64 +3,180 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Vibe Site</title>
+  <title>Vibe Coder Agent</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f9f7f0;
-      color: #333;
+      font-family: system-ui, sans-serif;
+      background: #faf9f6;
+      color: #2d3748;
       line-height: 1.6;
-      margin: 0;
       padding: 20px;
     }
     .container {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
-      text-align: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
-    h1 {
-      font-size: 2.5rem;
-      margin: 30px 0;
-      color: #2c3e50;
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; }
     }
-    p {
-      font-size: 1.1rem;
-      margin: 20px 0;
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .btn {
-      display: inline-block;
-      background: #3498db;
+    h2 {
+      margin-bottom: 16px;
+      color: #2b6cb0;
+    }
+    textarea, pre {
+      width: 100%;
+      height: 300px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    button {
+      background: #3182ce;
       color: white;
-      padding: 12px 24px;
-      margin: 10px;
-      text-decoration: none;
-      border-radius: 30px;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
+      margin-top: 10px;
     }
-    .btn:hover {
-      background: #2980b9;
+    button:hover { background: #2c5282; }
+    #preview {
+      min-height: 400px;
+      padding: 20px;
+      background: #f8f9fa;
+      border: 1px dashed #cbd5e0;
     }
-    footer {
-      margin-top: 40px;
-      color: #7f8c8d;
-      font-size: 0.9rem;
+    .section {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #edf2f7;
     }
+    .section:last-child { border: none; }
   </style>
 </head>
 <body>
+  <h1 style="text-align:center; margin-bottom:30px;">✨ Vibe Coder Agent</h1>
+  
   <div class="container">
-    <h1>✨ Hello, I'm Mafe David!</h1>
-    <p>I build cool things with code, design, and good vibes.</p>
-    
-    <p>Check out my work or say hi!</p>
-    
-    <a href="https://github.com/Greatmafedavid" class="btn">GitHub</a>
-    <a href="mafedavid@gmail.com" class="btn">Email Me</a>
+    <!-- Input Panel -->
+    <div class="panel">
+      <h2>🗣️ Tell Me What to Build</h2>
+      <textarea id="prompt" placeholder="Example: Add a hero section with my name 'David' and a 'Projects' button"></textarea>
+      <button onclick="generateSection()">Generate Section</button>
+      <p style="margin-top:10px; font-size:0.9em; color:#718096;">
+        Try: "Add contact email", "Put a dark footer", "Show my bio"
+      </p>
+    </div>
 
-    <footer>
-      Made with ❤️ and 100% free tools • No subscription ever
-    </footer>
+    <!-- Preview Panel -->
+    <div class="panel">
+      <h2>👀 Live Preview</h2>
+      <div id="preview">
+        <!-- Sections will appear here -->
+        <div class="section" id="default">
+          <h2>Hello! I'm your Vibe Coder Agent.</h2>
+          <p>Type a command above to build your website!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Output -->
+    <div class="panel" style="grid-column: 1 / -1;">
+      <h2>💻 Generated Code</h2>
+      <pre id="codeOutput"><!-- Your code will appear here --></pre>
+    </div>
   </div>
+
+  <script>
+    let sections = [];
+
+    function generateSection() {
+      const prompt = document.getElementById('prompt').value.trim().toLowerCase();
+      if (!prompt) return;
+
+      let html = '';
+      let explanation = '';
+
+      // Simple "AI" rules (you can expand these!)
+      if (prompt.includes('name') || prompt.includes('hero') || prompt.includes('hello')) {
+        const name = prompt.match(/name ['"]?(\w+)/)?.[1] || 'Friend';
+        html = `
+          <div class="section hero">
+            <h1>✨ Hello, I'm ${name}!</h1>
+            <p>I build things with code and good vibes.</p>
+            <button style="margin-top:16px; padding:8px 16px; background:#3182ce; color:white; border:none; border-radius:6px;">View My Work</button>
+          </div>
+        `;
+        explanation = `/* Hero section for ${name} */`;
+      }
+      else if (prompt.includes('contact') || prompt.includes('email')) {
+        const email = prompt.includes('@') ? 
+          prompt.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || 'you@example.com' : 
+          'you@example.com';
+        html = `
+          <div class="section contact">
+            <h2>📬 Contact Me</h2>
+            <p>Email: <a href="mailto:${email}">${email}</a></p>
+          </div>
+        `;
+        explanation = `/* Contact section */`;
+      }
+      else if (prompt.includes('bio') || prompt.includes('about')) {
+        html = `
+          <div class="section bio">
+            <h2>📖 About Me</h2>
+            <p>I'm passionate about creating simple, beautiful websites that just work.</p>
+          </div>
+        `;
+        explanation = `/* Bio section */`;
+      }
+      else if (prompt.includes('footer') || prompt.includes('dark')) {
+        html = `
+          <div class="section footer" style="background:#2d3748; color:white; padding:20px; margin-top:30px; border-radius:8px;">
+            <p>Made with ❤️ using Vibe Coder Agent</p>
+          </div>
+        `;
+        explanation = `/* Dark footer */`;
+      }
+      else {
+        html = `
+          <div class="section">
+            <h3>💡 ${prompt.charAt(0).toUpperCase() + prompt.slice(1)}</h3>
+            <p>Section generated from your request!</p>
+          </div>
+        `;
+        explanation = `/* Custom section */`;
+      }
+
+      // Add to preview
+      const preview = document.getElementById('preview');
+      if (document.getElementById('default')) {
+        preview.innerHTML = ''; // remove default
+      }
+      preview.innerHTML += html;
+
+      // Save to sections
+      sections.push(html);
+
+      // Show code
+      document.getElementById('codeOutput').textContent = explanation + '\n' + html.trim();
+
+      // Clear input
+      document.getElementById('prompt').value = '';
+    }
+  </script>
 </body>
 </html>
